@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+{% block title %}Zidio Connect – Find Your Dream Job{% endblock %}
+{% block content %}
+
+<section class="hero">
+  <div class="hero-tag">🚀 India's Next-Gen Job Portal</div>
+  <h1 class="hero-title">Connect to Your<br><em>Next Opportunity</em></h1>
+  <p class="hero-sub">Thousands of jobs. Zero friction. Built on AWS.</p>
+
+  <form class="hero-search" action="/jobs" method="GET">
+    <input type="text" name="search" placeholder="Job title or company..." />
+    <input type="text" name="location" placeholder="Location..." />
+    <button type="submit">Search Jobs</button>
+  </form>
+
+  <div class="hero-stats">
+    <div class="stat"><strong>{{ jobs|length }}+</strong><span>Live Jobs</span></div>
+    <div class="stat"><strong>500+</strong><span>Companies</span></div>
+    <div class="stat"><strong>10K+</strong><span>Applicants</span></div>
+  </div>
+</section>
+
+<section class="section-categories">
+  <h2 class="section-title">Browse by Category</h2>
+  <div class="cat-grid">
+    {% for cat, icon in [('Technology','💻'),('Design','🎨'),('Marketing','📣'),
+                         ('Finance','💰'),('Healthcare','🏥'),('Education','📚'),
+                         ('Sales','🤝'),('Operations','⚙️')] %}
+    <a href="/jobs?category={{ cat }}" class="cat-card">
+      <span class="cat-icon">{{ icon }}</span>
+      <span>{{ cat }}</span>
+    </a>
+    {% endfor %}
+  </div>
+</section>
+
+<section class="section-jobs">
+  <div class="section-header">
+    <h2 class="section-title">Latest Jobs</h2>
+    <a href="/jobs" class="view-all">View All →</a>
+  </div>
+  <div class="jobs-grid">
+    {% for job in jobs[:6] %}
+    <div class="job-card">
+      <div class="job-card-top">
+        <div class="job-company-badge">{{ job.company[0]|upper }}</div>
+        <span class="job-type {{ job.job_type|lower|replace(' ','-') }}">{{ job.job_type }}</span>
+      </div>
+      <h3 class="job-title">{{ job.title }}</h3>
+      <p class="job-company">{{ job.company }}</p>
+      <div class="job-meta">
+        <span>📍 {{ job.location }}</span>
+        <span>💼 {{ job.category }}</span>
+        <span>💰 {{ job.salary }}</span>
+      </div>
+      <a href="/job/{{ job.job_id }}" class="btn-apply">View & Apply</a>
+    </div>
+    {% else %}
+    <div class="empty-state">
+      <p>No jobs posted yet.</p>
+      <a href="/post-job" class="btn-primary">Post the First Job</a>
+    </div>
+    {% endfor %}
+  </div>
+</section>
+
+<section class="cta-section">
+  <h2>Hiring Talent?</h2>
+  <p>Post your job in minutes and reach thousands of qualified candidates.</p>
+  <a href="/post-job" class="btn-primary">Post a Job Free →</a>
+</section>
+
+{% endblock %}
