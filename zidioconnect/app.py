@@ -9,7 +9,7 @@ app = Flask(__name__)
 app.secret_key = os.environ.get('SECRET_KEY', 'zidio-connect-secret-2024')
 
 # ─── AWS CONFIG ─────────────────────────────────────────────────────────────
-AWS_REGION = os.environ.get('AWS_REGION', 'ap-south-1')  # Mumbai region for India
+AWS_REGION = os.environ.get('AWS_REGION', 'us-east-1')  # Mumbai region for India
 
 dynamodb = boto3.resource('dynamodb', region_name=AWS_REGION)
 sns_client = boto3.client('sns', region_name=AWS_REGION)
