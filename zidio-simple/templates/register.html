@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% block title %}Register - Zidio Connect{% endblock %}
+{% block content %}
+
+<div class="form-page">
+  <div class="form-header">
+    <h1>Create Account</h1>
+    <p>Join Zidio Connect as a Student or Recruiter</p>
+  </div>
+
+  <form class="styled-form" action="/register" method="POST">
+
+    <div class="role-selector">
+      <label class="role-card">
+        <input type="radio" name="role" value="student" checked/>
+        <span class="role-icon">🎓</span>
+        <strong>Student / Job Seeker</strong>
+        <small>Browse and apply for jobs</small>
+      </label>
+      <label class="role-card">
+        <input type="radio" name="role" value="recruiter"/>
+        <span class="role-icon">🏢</span>
+        <strong>Recruiter / Employer</strong>
+        <small>Post jobs and hire talent</small>
+      </label>
+    </div>
+
+    <div class="form-section">
+      <div class="form-row">
+        <div class="form-group">
+          <label>Full Name *</label>
+          <input type="text" name="name" placeholder="Your full name" required/>
+        </div>
+        <div class="form-group">
+          <label>Email Address *</label>
+          <input type="email" name="email" placeholder="you@email.com" required/>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Password *</label>
+          <input type="password" name="password" placeholder="Min 6 characters" minlength="6" required/>
+        </div>
+        <div class="form-group" id="company-field">
+          <label>Company Name <small>(Recruiters)</small></label>
+          <input type="text" name="company" placeholder="Your company name"/>
+        </div>
+      </div>
+    </div>
+
+    <button type="submit" class="btn-primary large full-width">Create Account →</button>
+    <p class="form-footer-text">Already have an account? <a href="/login">Login here</a></p>
+  </form>
+</div>
+
+<script>
+  // Show/hide company field based on role
+  const radios = document.querySelectorAll('input[name="role"]');
+  const companyField = document.getElementById('company-field');
+  radios.forEach(r => r.addEventListener('change', () => {
+    companyField.style.opacity = r.value === 'recruiter' && r.checked ? '1' : '0.4';
+  }));
+</script>
+{% endblock %}

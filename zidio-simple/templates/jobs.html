@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{% block title %}Browse Jobs - Zidio Connect{% endblock %}
+{% block content %}
+
+<div class="page-header">
+  <h1>Browse Jobs</h1>
+  <p>{{ jobs|length }} job{{ 's' if jobs|length != 1 }} found</p>
+</div>
+
+<div class="jobs-page-layout">
+  <aside class="filter-panel">
+    <h3>Filters</h3>
+    <form action="/jobs" method="GET">
+      <div class="filter-group">
+        <label>Search</label>
+        <input type="text" name="search" value="{{ search }}" placeholder="Title or company..."/>
+      </div>
+      <div class="filter-group">
+        <label>Location</label>
+        <input type="text" name="location" value="{{ location }}" placeholder="City or remote..."/>
+      </div>
+      <div class="filter-group">
+        <label>Category</label>
+        <select name="category">
+          <option value="">All Categories</option>
+          {% for cat in ['Technology','Design','Marketing','Finance','Healthcare','Education','Sales','Operations'] %}
+          <option value="{{ cat }}" {{ 'selected' if category==cat }}>{{ cat }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <button type="submit" class="btn-primary full-width">Apply Filters</button>
+      <a href="/jobs" class="btn-ghost full-width">Clear</a>
+    </form>
+  </aside>
+
+  <div class="jobs-list">
+    {% for job in jobs %}
+    <div class="job-list-card">
+      <div class="job-list-left">
+        <div class="job-company-badge large">{{ job.company[0]|upper }}</div>
+        <div class="job-list-info">
+          <h3><a href="/job/{{ job.job_id }}">{{ job.title }}</a></h3>
+          <p class="job-company">{{ job.company }}</p>
+          <div class="job-meta">
+            <span>📍 {{ job.location }}</span>
+            <span>💼 {{ job.category }}</span>
+            <span>💰 {{ job.salary }}</span>
+          </div>
+        </div>
+      </div>
+      <div class="job-list-right">
+        <span class="job-type {{ job.job_type|lower|replace(' ','-') }}">{{ job.job_type }}</span>
+        <a href="/job/{{ job.job_id }}" class="btn-apply">Apply →</a>
+        <small class="posted-date">{{ job.posted_at[:10] if job.posted_at else '' }}</small>
+      </div>
+    </div>
+    {% else %}
+    <div class="empty-state">
+      <h3>No jobs found</h3>
+      <p>Try adjusting your filters{% if current_user.is_authenticated and current_user.role == 'recruiter' %} or <a href="/post-job">post a job</a>{% endif %}.</p>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block title %}My Jobs - Zidio Connect{% endblock %}
+{% block content %}
+
+<div class="page-header">
+  <h1>My Jobs</h1>
+  <a href="/post-job" class="btn-primary">+ Post New Job</a>
+</div>
+
+{% if jobs %}
+<div class="my-jobs-list">
+  {% for job in jobs %}
+  <div class="my-job-card">
+    <div class="my-job-left">
+      <div class="job-company-badge large">{{ job.company[0]|upper }}</div>
+      <div>
+        <h3><a href="/job/{{ job.job_id }}">{{ job.title }}</a></h3>
+        <p class="job-company">{{ job.company }} · {{ job.location }}</p>
+        <div class="job-meta">
+          <span>📅 Posted: {{ job.posted_at[:10] if job.posted_at else 'N/A' }}</span>
+          <span>👥 {{ job.applicant_count }} applicant{{ 's' if job.applicant_count != 1 }}</span>
+          <span class="job-type {{ job.job_type|lower|replace(' ','-') }}">{{ job.job_type }}</span>
+        </div>
+      </div>
+    </div>
+    <div class="my-job-actions">
+      <span class="status-badge {{ 'accepted' if job.status == 'active' else 'rejected' }}">
+        {{ '🟢 Active' if job.status == 'active' else '🔴 Closed' }}
+      </span>
+      <a href="/applicants/{{ job.job_id }}" class="btn-ghost small">View Applicants</a>
+      <form action="/job/{{ job.job_id }}/toggle" method="POST" style="display:inline">
+        <button type="submit" class="btn-ghost small">
+          {{ 'Close Job' if job.status == 'active' else 'Reopen Job' }}
+        </button>
+      </form>
+      <form action="/job/{{ job.job_id }}/delete" method="POST" style="display:inline"
+            onsubmit="return confirm('Delete this job and all its applications?')">
+        <button type="submit" class="btn-danger small">Delete</button>
+      </form>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+{% else %}
+<div class="empty-state large">
+  <h3>No jobs posted yet</h3>
+  <p>Start by posting your first job listing.</p>
+  <a href="/post-job" class="btn-primary">Post a Job →</a>
+</div>
+{% endif %}
+
+{% endblock %}

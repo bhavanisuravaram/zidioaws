@@ -1,0 +1,35 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "DynamoDBZidioTables",
+      "Effect": "Allow",
+      "Action": [
+        "dynamodb:PutItem",
+        "dynamodb:GetItem",
+        "dynamodb:UpdateItem",
+        "dynamodb:DeleteItem",
+        "dynamodb:Scan",
+        "dynamodb:BatchWriteItem",
+        "dynamodb:DescribeTable",
+        "dynamodb:ListTables"
+      ],
+      "Resource": [
+        "arn:aws:dynamodb:ap-south-1:*:table/zidio_users",
+        "arn:aws:dynamodb:ap-south-1:*:table/zidio_jobs",
+        "arn:aws:dynamodb:ap-south-1:*:table/zidio_applications"
+      ]
+    },
+    {
+      "Sid": "SNSZidioTopic",
+      "Effect": "Allow",
+      "Action": [
+        "sns:Publish",
+        "sns:CreateTopic",
+        "sns:Subscribe",
+        "sns:ListTopics"
+      ],
+      "Resource": "arn:aws:sns:ap-south-1:*:zidio-notifications"
+    }
+  ]
+}

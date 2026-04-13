@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+{% block title %}Applicants - {{ job.title }} - Zidio Connect{% endblock %}
+{% block content %}
+
+<div class="page-header">
+  <div>
+    <h1>Applicants</h1>
+    <p>{{ job.title }} · {{ job.company }}</p>
+  </div>
+  <div style="display:flex;gap:12px;align-items:center;">
+    <span class="status-badge {{ 'accepted' if job.status == 'active' else 'rejected' }}">
+      {{ '🟢 Active' if job.status == 'active' else '🔴 Closed' }}
+    </span>
+    <a href="/my-jobs" class="btn-ghost">← My Jobs</a>
+  </div>
+</div>
+
+<div class="stats-grid mini">
+  <div class="stat-card blue">
+    <span class="stat-num">{{ applications|length }}</span>
+    <span class="stat-label">Total</span>
+  </div>
+  <div class="stat-card orange">
+    <span class="stat-num">{{ applications|selectattr('status','equalto','pending')|list|length }}</span>
+    <span class="stat-label">Pending</span>
+  </div>
+  <div class="stat-card green">
+    <span class="stat-num">{{ applications|selectattr('status','equalto','accepted')|list|length }}</span>
+    <span class="stat-label">Accepted</span>
+  </div>
+  <div class="stat-card red">
+    <span class="stat-num">{{ applications|selectattr('status','equalto','rejected')|list|length }}</span>
+    <span class="stat-label">Rejected</span>
+  </div>
+</div>
+
+{% if applications %}
+<div class="applicant-list">
+  {% for app in applications %}
+  <div class="applicant-card">
+    <div class="applicant-info">
+      <div class="applicant-avatar">{{ app.applicant_name[0]|upper }}</div>
+      <div>
+        <strong>{{ app.applicant_name }}</strong>
+        <p>{{ app.applicant_email }} {% if app.phone %}· {{ app.phone }}{% endif %}</p>
+        {% if app.experience %}<small>Experience: {{ app.experience }}</small>{% endif %}
+        <small class="posted-date">Applied: {{ app.applied_at[:10] }}</small>
+      </div>
+    </div>
+
+    {% if app.cover_letter %}
+    <div class="cover-letter-preview">
+      <strong>Cover Letter:</strong>
+      <p>{{ app.cover_letter[:300] }}{% if app.cover_letter|length > 300 %}...{% endif %}</p>
+    </div>
+    {% endif %}
+
+    <div class="applicant-actions">
+      <span class="status-badge {{ app.status }}">
+        {% if app.status == 'pending' %}⏳ Pending
+        {% elif app.status == 'accepted' %}✅ Accepted
+        {% else %}❌ Rejected{% endif %}
+      </span>
+      {% if app.status != 'accepted' %}
+      <form action="/application/{{ app.application_id }}/status" method="POST" style="display:inline">
+        <input type="hidden" name="status" value="accepted"/>
+        <button type="submit" class="btn-success small">Accept</button>
+      </form>
+      {% endif %}
+      {% if app.status != 'rejected' %}
+      <form action="/application/{{ app.application_id }}/status" method="POST" style="display:inline">
+        <input type="hidden" name="status" value="rejected"/>
+        <button type="submit" class="btn-danger small">Reject</button>
+      </form>
+      {% endif %}
+      {% if app.status != 'pending' %}
+      <form action="/application/{{ app.application_id }}/status" method="POST" style="display:inline">
+        <input type="hidden" name="status" value="pending"/>
+        <button type="submit" class="btn-ghost small">Reset</button>
+      </form>
+      {% endif %}
+    </div>
+  </div>
+  {% endfor %}
+</div>
+{% else %}
+<div class="empty-state">
+  <h3>No applications yet</h3>
+  <p>Share your job listing to attract candidates.</p>
+</div>
+{% endif %}
+
+{% endblock %}

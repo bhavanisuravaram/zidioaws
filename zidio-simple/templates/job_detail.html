@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+{% block title %}{{ job.title }} - Zidio Connect{% endblock %}
+{% block content %}
+
+<div class="detail-page">
+  <div class="detail-main">
+    <div class="detail-header">
+      <div class="job-company-badge xlarge">{{ job.company[0]|upper }}</div>
+      <div>
+        <h1>{{ job.title }}</h1>
+        <p class="job-company large">{{ job.company }}</p>
+        <div class="job-meta large">
+          <span>📍 {{ job.location }}</span>
+          <span>💼 {{ job.category }}</span>
+          <span>💰 {{ job.salary }}</span>
+          <span class="job-type {{ job.job_type|lower|replace(' ','-') }}">{{ job.job_type }}</span>
+          {% if job.status == 'closed' %}
+          <span class="status-badge rejected">Closed</span>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+    <div class="detail-section">
+      <h2>About this Role</h2>
+      <p>{{ job.description }}</p>
+    </div>
+    <div class="detail-section">
+      <h2>Requirements</h2>
+      <p>{{ job.requirements }}</p>
+    </div>
+    <div class="detail-section">
+      <h2>Contact</h2>
+      <p>📧 {{ job.contact_email }}</p>
+    </div>
+  </div>
+
+  <aside class="detail-sidebar">
+    <div class="sidebar-card">
+      {% if job.status == 'closed' %}
+        <h3>Applications Closed</h3>
+        <p>This job is no longer accepting applications.</p>
+      {% elif not current_user.is_authenticated %}
+        <h3>Ready to Apply?</h3>
+        <p>Log in or register to submit your application.</p>
+        <a href="/login" class="btn-primary full-width">Login to Apply →</a>
+        <a href="/register" class="btn-ghost full-width" style="margin-top:8px">Register Free</a>
+      {% elif current_user.role == 'student' %}
+        {% if already_applied %}
+          <h3>✅ Already Applied</h3>
+          <p>You've submitted an application for this role.</p>
+          <a href="/student/dashboard" class="btn-ghost full-width">View My Applications</a>
+        {% else %}
+          <h3>Ready to Apply?</h3>
+          <p>Submit your application directly through Zidio Connect.</p>
+          <a href="/apply/{{ job.job_id }}" class="btn-primary full-width">Apply Now →</a>
+        {% endif %}
+      {% else %}
+        <h3>Your Job Posting</h3>
+        <a href="/applicants/{{ job.job_id }}" class="btn-primary full-width">View Applicants →</a>
+      {% endif %}
+    </div>
+    <div class="sidebar-card secondary">
+      <h4>Job Details</h4>
+      <ul class="detail-list">
+        <li><strong>Posted:</strong> {{ job.posted_at[:10] if job.posted_at else 'N/A' }}</li>
+        <li><strong>Type:</strong> {{ job.job_type }}</li>
+        <li><strong>Category:</strong> {{ job.category }}</li>
+        <li><strong>Location:</strong> {{ job.location }}</li>
+        <li><strong>Salary:</strong> {{ job.salary }}</li>
+      </ul>
+    </div>
+    <a href="/jobs" class="btn-ghost full-width">← Back to Jobs</a>
+  </aside>
+</div>
+
+{% endblock %}

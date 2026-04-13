@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% block title %}Apply - {{ job.title }} - Zidio Connect{% endblock %}
+{% block content %}
+
+<div class="form-page">
+  <div class="form-header">
+    <h1>Apply for Role</h1>
+    <div class="applying-for">
+      <div class="job-company-badge large">{{ job.company[0]|upper }}</div>
+      <div>
+        <strong>{{ job.title }}</strong>
+        <p>{{ job.company }} · {{ job.location }}</p>
+      </div>
+    </div>
+  </div>
+
+  <form class="styled-form" action="/apply/{{ job.job_id }}" method="POST">
+    <div class="form-section">
+      <h3>Your Details <span class="pre-filled-note">Pre-filled from your profile</span></h3>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Full Name</label>
+          <input type="text" value="{{ current_user.name }}" disabled class="input-disabled"/>
+        </div>
+        <div class="form-group">
+          <label>Email Address</label>
+          <input type="email" value="{{ current_user.email }}" disabled class="input-disabled"/>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Phone Number</label>
+          <input type="tel" name="phone" value="{{ current_user.phone }}" placeholder="+91 9999999999"/>
+        </div>
+        <div class="form-group">
+          <label>Years of Experience</label>
+          <input type="text" name="experience" placeholder="e.g. 3 years"/>
+        </div>
+      </div>
+    </div>
+    <div class="form-section">
+      <h3>Cover Letter</h3>
+      <div class="form-group">
+        <label>Why are you a great fit?</label>
+        <textarea name="cover_letter" rows="6" placeholder="Tell the employer about your experience and why you're interested..."></textarea>
+      </div>
+    </div>
+    <div class="form-actions">
+      <a href="/job/{{ job.job_id }}" class="btn-ghost">← Back</a>
+      <button type="submit" class="btn-primary large">Submit Application →</button>
+    </div>
+  </form>
+</div>
+
+{% endblock %}

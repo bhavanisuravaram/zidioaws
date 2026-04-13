@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% block title %}My Applications - Zidio Connect{% endblock %}
+{% block content %}
+
+<div class="page-header">
+  <div>
+    <h1>My Applications</h1>
+    <p>Welcome back, {{ current_user.name }}</p>
+  </div>
+  <a href="/jobs" class="btn-primary">Browse Jobs</a>
+</div>
+
+<div class="stats-grid">
+  <div class="stat-card blue">
+    <span class="stat-num">{{ applications|length }}</span>
+    <span class="stat-label">Total Applied</span>
+  </div>
+  <div class="stat-card orange">
+    <span class="stat-num">{{ applications|selectattr('status','equalto','pending')|list|length }}</span>
+    <span class="stat-label">Pending</span>
+  </div>
+  <div class="stat-card green">
+    <span class="stat-num">{{ applications|selectattr('status','equalto','accepted')|list|length }}</span>
+    <span class="stat-label">Accepted</span>
+  </div>
+  <div class="stat-card red">
+    <span class="stat-num">{{ applications|selectattr('status','equalto','rejected')|list|length }}</span>
+    <span class="stat-label">Rejected</span>
+  </div>
+</div>
+
+<div class="dashboard-section full-width">
+  <h2>Application History</h2>
+  {% if applications %}
+  <div class="app-list">
+    {% for app in applications %}
+    <div class="app-card">
+      <div class="app-card-left">
+        <div class="job-company-badge">{{ app.company[0]|upper }}</div>
+        <div>
+          <strong>{{ app.job_title }}</strong>
+          <p class="job-company">{{ app.company }}</p>
+          <small class="posted-date">Applied: {{ app.applied_at[:10] }}</small>
+        </div>
+      </div>
+      <div class="app-card-right">
+        <span class="status-badge {{ app.status }}">
+          {% if app.status == 'pending' %}⏳ Pending
+          {% elif app.status == 'accepted' %}✅ Accepted
+          {% else %}❌ Rejected{% endif %}
+        </span>
+        <a href="/job/{{ app.job_id }}" class="btn-ghost small">View Job</a>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <div class="empty-state">
+    <p>You haven't applied for any jobs yet.</p>
+    <a href="/jobs" class="btn-primary">Browse Jobs →</a>
+  </div>
+  {% endif %}
+</div>
+
+{% endblock %}

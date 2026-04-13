@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>{% block title %}Zidio Connect{% endblock %}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<nav class="navbar">
+  <a href="/" class="brand"><span class="brand-z">Z</span>idio<span class="brand-dot">.</span>Connect</a>
+  <div class="nav-links">
+    <a href="/jobs">Browse Jobs</a>
+    {% if current_user.is_authenticated %}
+      {% if current_user.role == 'recruiter' %}
+        <a href="/post-job" class="btn-nav">Post a Job</a>
+        <a href="/recruiter/dashboard">Dashboard</a>
+        <a href="/my-jobs">My Jobs</a>
+      {% else %}
+        <a href="/student/dashboard">My Applications</a>
+      {% endif %}
+      <a href="/profile">{{ current_user.name.split()[0] }}</a>
+      <a href="/logout" class="btn-nav-ghost">Logout</a>
+    {% else %}
+      <a href="/login">Login</a>
+      <a href="/register" class="btn-nav">Register</a>
+    {% endif %}
+  </div>
+</nav>
+<div class="flash-container">
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% for category, message in messages %}
+      <div class="flash flash-{{ category }}">{{ message }}</div>
+    {% endfor %}
+  {% endwith %}
+</div>
+{% block content %}{% endblock %}
+<footer class="footer">
+  <div class="footer-inner">
+    <span class="brand-z">Z</span>idio<span class="brand-dot">.</span>Connect &mdash; Powered by MongoDB
+    <span class="footer-pills">
+      <span>Flask</span><span>PyMongo</span><span>Flask-Login</span><span>Werkzeug</span>
+    </span>
+  </div>
+</footer>
+</body>
+</html>

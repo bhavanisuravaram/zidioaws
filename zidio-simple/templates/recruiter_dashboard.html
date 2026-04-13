@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+{% block title %}Recruiter Dashboard - Zidio Connect{% endblock %}
+{% block content %}
+
+<div class="page-header">
+  <div>
+    <h1>Recruiter Dashboard</h1>
+    <p>{{ current_user.company or current_user.name }}</p>
+  </div>
+  <a href="/post-job" class="btn-primary">+ Post New Job</a>
+</div>
+
+<div class="stats-grid">
+  <div class="stat-card blue">
+    <span class="stat-num">{{ stats.total_jobs }}</span>
+    <span class="stat-label">Total Jobs</span>
+  </div>
+  <div class="stat-card green">
+    <span class="stat-num">{{ stats.active_jobs }}</span>
+    <span class="stat-label">Active Jobs</span>
+  </div>
+  <div class="stat-card orange">
+    <span class="stat-num">{{ stats.total_apps }}</span>
+    <span class="stat-label">Applications</span>
+  </div>
+  <div class="stat-card purple">
+    <span class="stat-num">{{ stats.pending_apps }}</span>
+    <span class="stat-label">Pending Review</span>
+  </div>
+</div>
+
+<div class="dashboard-grid">
+  <div class="dashboard-section">
+    <div class="section-header">
+      <h2>Recent Jobs</h2>
+      <a href="/my-jobs" class="view-all">View All →</a>
+    </div>
+    {% for job in jobs %}
+    <div class="dash-row">
+      <div>
+        <strong><a href="/job/{{ job.job_id }}">{{ job.title }}</a></strong>
+        <p>{{ job.company }} · {{ job.location }}</p>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;">
+        <span class="status-badge {{ 'accepted' if job.status == 'active' else 'rejected' }}">{{ job.status }}</span>
+        <a href="/applicants/{{ job.job_id }}" class="btn-ghost small">Applicants</a>
+      </div>
+    </div>
+    {% else %}
+    <p class="empty-msg">No jobs yet. <a href="/post-job">Post one!</a></p>
+    {% endfor %}
+  </div>
+
+  <div class="dashboard-section">
+    <h2>Recent Applications</h2>
+    {% for app in applications %}
+    <div class="dash-row">
+      <div>
+        <strong>{{ app.applicant_name }}</strong>
+        <p>{{ app.job_title }}</p>
+        <small>{{ app.applicant_email }}</small>
+      </div>
+      <span class="status-badge {{ app.status }}">{{ app.status }}</span>
+    </div>
+    {% else %}
+    <p class="empty-msg">No applications received yet.</p>
+    {% endfor %}
+  </div>
+</div>
+
+{% endblock %}
